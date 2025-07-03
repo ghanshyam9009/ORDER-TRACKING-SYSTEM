@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "description": "Real-time SL/TP tracking system with DynamoDB and SQS",
     "main": "start.js",
+    "type":"module",
     "scripts": {
         "start": "node start.js",
         "server": "node server.js",
