@@ -1,6 +1,8 @@
 import express from 'express';
 import axios from 'axios';
 import cron from 'node-cron';
+import dotenv from 'dotenv';
+dotenv.config();
 
 import { connectToWebSocket } from './lib/wsClient.js';
 import { addPosition, removePosition,updatePosition,positions,pendingPositions } from './lib/positionTracker.js';
