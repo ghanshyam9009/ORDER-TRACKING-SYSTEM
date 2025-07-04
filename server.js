@@ -30,7 +30,7 @@ async function start() {
       entryPrice,
       leverage,
       marginUsed,
-      order,
+      // order,
       quantity,
       orderType,
       positionType
@@ -70,7 +70,7 @@ async function start() {
       await addPosition(symbol, userId, {
         posId,
         status,
-        order,
+        // order,
         orderType,
         positionType,
         quantity
@@ -102,7 +102,7 @@ app.post('/add-or-update', async (req, res) => {
     orderType,
     positionType,
     quantity,
-    order,
+    // order,
     ...rest
   } = req.body;
 
@@ -111,7 +111,7 @@ app.post('/add-or-update', async (req, res) => {
     userId &&
     posId &&
     (type || status === 'PENDING') &&
-    (entryPrice || order) &&
+    (entryPrice) &&
     quantity !== undefined;
 
   try {
@@ -137,7 +137,7 @@ app.post('/add-or-update', async (req, res) => {
         const newLimit = {
           posId,
           status,
-          order,
+          // order,
           orderType,
           positionType,
           quantity
