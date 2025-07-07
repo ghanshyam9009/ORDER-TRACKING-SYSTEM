@@ -232,9 +232,64 @@ app.post('/get-unsubcribe', (req, res) => {
   res.json({ ok: true, message: `Unsubscribed from ${symbol}` });
 });
 
-// Scheduled Cron Tasks
+
+
+
+
+const timezone = 'Asia/Kolkata';
+
+// // [12:47 PM IST]
+// cron.schedule('48 12 * * *', async () => {
+//   console.log('🔔 [12:47 PM IST] Starting controlled shutdown sequence...');
+//   try {
+//     await axios.post('https://7qc4q6cxgg.execute-api.ap-southeast-1.amazonaws.com/prod/pause-stream');
+//     console.log('✅ Step 1: DynamoDB stream paused');
+
+//     await axios.post('https://q8i5zqsopa.execute-api.ap-southeast-1.amazonaws.com/default/incrypto-dev-auto-squareoff-AutoSquareOffFunction-xbFlwBZcRFih');
+//     console.log('✅ Step 2: Square-off lambda hit');
+
+//     console.log('✅ Step 3: Limit Order lambda hit');
+//   } catch (err) {
+//     console.error('❌ Error in shutdown sequence:', err);
+//   }
+// }, { timezone });
+
+// // [12:54 PM IST]
+// cron.schedule('51 12 * * *', async () => {
+//   console.log('🔁 [12:54 PM IST] Restarting central server...');
+//   try {
+//     await axios.post('https://fyhrl9cxpc.execute-api.ap-southeast-1.amazonaws.com/default/central_server_restarter');
+//     console.log('✅ Step 4: Central server restart API called');
+//   } catch (err) {
+//     console.error('❌ Restart error:', err);
+//   }
+// }, { timezone });
+
+// // [12:56 PM IST]
+// cron.schedule('52 12 * * *', async () => {
+//   console.log('🔄 [12:56 PM IST] Re-enabling DynamoDB stream...');
+//   try {
+//     await axios.post('https://7qc4q6cxgg.execute-api.ap-southeast-1.amazonaws.com/prod/resume-stream');
+//     console.log('✅ Step 5: DynamoDB stream resumed');
+//   } catch (err) {
+//     console.error('❌ Error resuming stream:', err);
+//   }
+// }, { timezone });
+
+// // [12:57 PM IST]
+// cron.schedule('53 12 * * *', async () => {
+//   console.log('🧨 [12:57 PM IST] Restarting this Node.js server...');
+//   try {
+//     console.log('✅ Step 6: Exiting process to trigger server restart...');
+//     process.exit(0);
+//   } catch (err) {
+//     console.error('❌ Error during self-restart:', err);
+//   }
+// }, { timezone });
+
+// Scheduled Cron Tasks (IST-based)
 cron.schedule('25 13 * * *', async () => {
-  console.log('🔔 [1:25 PM] Starting controlled shutdown sequence...');
+  console.log('🔔 [1:25 PM IST] Starting controlled shutdown sequence...');
   try {
     await axios.post('https://7qc4q6cxgg.execute-api.ap-southeast-1.amazonaws.com/prod/pause-stream');
     console.log('✅ Step 1: DynamoDB stream paused');
@@ -246,37 +301,48 @@ cron.schedule('25 13 * * *', async () => {
   } catch (err) {
     console.error('❌ Error in shutdown sequence:', err);
   }
+}, {
+  timezone: 'Asia/Kolkata'
 });
 
 cron.schedule('32 13 * * *', async () => {
-  console.log('🔁 [1:32 PM] Restarting central server...');
+  console.log('🔁 [1:32 PM IST] Restarting central server...');
   try {
     await axios.post('https://fyhrl9cxpc.execute-api.ap-southeast-1.amazonaws.com/default/central_server_restarter');
     console.log('✅ Step 4: Central server restart API called');
   } catch (err) {
     console.error('❌ Restart error:', err);
   }
+}, {
+  timezone: 'Asia/Kolkata'
 });
 
 cron.schedule('34 13 * * *', async () => {
-  console.log('🔄 [1:34 PM] Re-enabling DynamoDB stream...');
+  console.log('🔄 [1:34 PM IST] Re-enabling DynamoDB stream...');
   try {
     await axios.post('https://7qc4q6cxgg.execute-api.ap-southeast-1.amazonaws.com/prod/resume-stream');
     console.log('✅ Step 5: DynamoDB stream resumed');
   } catch (err) {
     console.error('❌ Error resuming stream:', err);
   }
+}, {
+  timezone: 'Asia/Kolkata'
 });
 
 cron.schedule('35 13 * * *', async () => {
-  console.log('🧨 [1:35 PM] Restarting this Node.js server...');
+  console.log('🧨 [1:35 PM IST] Restarting this Node.js server...');
   try {
     console.log('✅ Step 6: Exiting process to trigger server restart...');
     process.exit(0);
   } catch (err) {
     console.error('❌ Error during self-restart:', err);
   }
+}, {
+  timezone: 'Asia/Kolkata'
 });
+
+
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 API server running on port ${PORT}`));
