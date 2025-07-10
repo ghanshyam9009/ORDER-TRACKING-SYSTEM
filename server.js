@@ -105,7 +105,7 @@ app.post('/add-or-update', async (req, res) => {
     orderType,
     positionType,
     quantity,
-    // order,
+    orderID,
     ...rest
   } = req.body;
 
@@ -132,7 +132,8 @@ app.post('/add-or-update', async (req, res) => {
           status,
           quantity,
           orderType,
-          positionType
+          positionType,
+          orderID
         };
         await addPosition(symbol, userId, newPos);
         console.log(`✅ [Add] Tracked position added: ${symbol} - ${userId}`);
@@ -140,7 +141,7 @@ app.post('/add-or-update', async (req, res) => {
         const newLimit = {
           posId,
           status,
-          // order,
+          orderID,
           orderType,
           positionType,
           quantity
