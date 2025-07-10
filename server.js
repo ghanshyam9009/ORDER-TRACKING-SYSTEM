@@ -109,6 +109,8 @@ app.post('/add-or-update', async (req, res) => {
     ...rest
   } = req.body;
 
+  console.log(req.body)
+
   const isNewPosition =
     symbol &&
     userId &&
