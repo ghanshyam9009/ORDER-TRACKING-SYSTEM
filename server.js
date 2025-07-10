@@ -30,11 +30,13 @@ async function start() {
       entryPrice,
       leverage,
       marginUsed,
-      // order,
+      orderID,
       quantity,
       orderType,
       positionType
     } = pos;
+
+    console.log(orderID)
      
     // console.log(pos);
     const isPendingLimitOrder = status === 'PENDING' ;
@@ -60,6 +62,7 @@ async function start() {
       positionObj.orderType=orderType;
       positionObj.positionType=positionType;
       positionObj.status=status;
+      positionObj.orderID=orderID;
 
       await addPosition(symbol, userId, positionObj);
       continue;
@@ -70,7 +73,7 @@ async function start() {
       await addPosition(symbol, userId, {
         posId,
         status,
-        // order,
+        orderID,
         orderType,
         positionType,
         quantity
