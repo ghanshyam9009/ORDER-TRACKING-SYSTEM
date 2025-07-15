@@ -2,7 +2,11 @@ import express from 'express';
 import axios from 'axios';
 import cron from 'node-cron';
 import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
+
+
+// ✅ Allow any origin on any port
 
 import { connectToWebSocket } from './lib/wsClient.js';
 import { addPosition, removePosition,updatePosition,positions,pendingPositions } from './lib/positionTracker.js';
@@ -10,6 +14,8 @@ import { fetchAllOpenPositions } from './lib/dbClient.js'; // ✅ Named import
 
 const app = express();
 app.use(express.json());
+app.use(cors());
+
 
 async function start() {
   console.log('🔁 Starting Order Tracking Service...');
@@ -97,7 +103,7 @@ app.post('/add-or-update', async (req, res) => {
     symbol,
     userId,
     posId,
-    // type,
+    type,
     status,
     entryPrice,
     sl,
