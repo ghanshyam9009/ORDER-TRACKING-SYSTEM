@@ -97,7 +97,7 @@ app.post('/add-or-update', async (req, res) => {
     symbol,
     userId,
     posId,
-    // type,
+    type,
     status,
     entryPrice,
     sl,
