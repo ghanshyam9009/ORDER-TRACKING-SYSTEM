@@ -97,7 +97,7 @@ app.post('/add-or-update', async (req, res) => {
     symbol,
     userId,
     posId,
-    type,
+    // type,
     status,
     entryPrice,
     sl,
@@ -208,6 +208,33 @@ app.post('/force-delete', async (req, res) => {
     res.status(500).send({ ok: false, message: 'Server error' });
   }
 });
+
+
+app.post('/update', async (req, res) => {
+  const { symbol, userId, posId, updates } = req.body;
+
+  if (!symbol || !userId || !posId || !updates) {
+    return res.status(400).send({
+      ok: false,
+      message: 'Missing required fields: symbol, userId, posId, updates',
+    });
+  }
+
+  try {
+    await updatePosition(symbol, userId, posId, updates);
+    console.log(`🔄 [Update] Position updated via /update: ${symbol} - ${userId} - ${posId}`);
+    res.send({ ok: true });
+  } catch (err) {
+    console.error('❌ Error in /update:', err);
+    res.status(500).send({ ok: false, message: 'Server error' });
+  }
+});
+
+
+
+
+
+
 
 
 app.post('/add-position', async (req, res) => {
