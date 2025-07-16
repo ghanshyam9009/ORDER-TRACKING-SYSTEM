@@ -102,6 +102,38 @@ await start();
 
 // keep existing routes and cron jobs...
 
+
+async function forceDeletePosition(symbol, userId, posId) {
+  let found = false;
+
+  if (positions[symbol]?.[userId]?.[posId]) {
+    delete positions[symbol][userId][posId];
+    if (Object.keys(positions[symbol][userId]).length === 0) delete positions[symbol][userId];
+    if (Object.keys(positions[symbol]).length === 0) {
+      delete positions[symbol];
+      await axios.post('https://cryptobknd.click/get-unsubscribe', { symbol });
+    }
+    found = true;
+  }
+
+  if (pendingPositions[symbol]?.[userId]?.[posId]) {
+    delete pendingPositions[symbol][userId][posId];
+    if (Object.keys(pendingPositions[symbol][userId]).length === 0) delete pendingPositions[symbol][userId];
+    if (Object.keys(pendingPositions[symbol]).length === 0) {
+      delete pendingPositions[symbol];
+      await axios.post('https://cryptobknd.click/get-unsubscribe', { symbol });
+    }
+    found = true;
+  }
+
+  if (found) {
+    console.log(`🗑️ [Force Delete] Position removed: ${symbol} - ${userId} - ${posId}`);
+    return { ok: true };
+  } else {
+    throw new Error('Position not found');
+  }
+}
+
 // ✅ Add or Update Position
 app.post('/add-or-update', async (req, res) => {
   const {
@@ -220,7 +252,6 @@ app.post('/force-delete', async (req, res) => {
   }
 });
 
-
 app.post('/update', async (req, res) => {
   const { symbol, userId, posId, updates } = req.body;
 
@@ -231,15 +262,35 @@ app.post('/update', async (req, res) => {
     });
   }
 
+  const slEmpty = updates.sl === null || updates.sl === 'null' || updates.sl === undefined;
+  const tpEmpty = updates.tp === null || updates.tp === 'null' || updates.tp === undefined;
+
   try {
+    // ❗ Check if both SL and TP are null-like → force delete
+    if (slEmpty && tpEmpty) {
+      console.warn(`⚠️ SL & TP both null → triggering force delete for ${symbol} - ${userId} - ${posId}`);
+
+      // Optional: Use your actual force-delete logic here
+      // await hitAPI('/force-delete', { symbol, userId, posId });
+      await forceDeletePosition(symbol, userId, posId);
+
+      return res.send({
+        ok: true,
+        message: 'Force delete triggered due to null SL & TP',
+      });
+    }
+
+    // ✅ Proceed with normal update
     await updatePosition(symbol, userId, posId, updates);
     console.log(`🔄 [Update] Position updated via /update: ${symbol} - ${userId} - ${posId}`);
     res.send({ ok: true });
+
   } catch (err) {
     console.error('❌ Error in /update:', err);
     res.status(500).send({ ok: false, message: 'Server error' });
   }
 });
+
 
 
 
