@@ -81,15 +81,29 @@ async function start() {
 
     // ✅ Case 2: Add pending limit order (not trackable, but needed to detect fill)
     if (isPendingLimitOrder) {
+      // await addPosition(symbol, userId, {
+      //   posId,
+      //   status,
+      //   orderID,
+      //   orderType,
+      //   positionType,
+      //   quantity
+      // } );
+
       await addPosition(symbol, userId, {
         posId,
-        status,
-        orderID,
+        type,         // may be undefined
+        sl, tp,       // optional
+        entryPrice,
+        leverage,
+        marginUsed,
+        quantity,
         orderType,
         positionType,
-        quantity
-      } );
-
+        status,
+        orderID
+      });
+      
       console.log(`🔔 Added pending limit order for ${symbol} (${userId})`);
     }
   }
