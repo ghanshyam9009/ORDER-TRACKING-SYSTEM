@@ -45,7 +45,8 @@ async function start() {
       quantity,
       orderType,
       positionType,
-      orderCategory
+      orderCategory,
+      contributionAmount,
     } = pos;
 
     console.log(orderID)
@@ -76,6 +77,7 @@ async function start() {
       positionObj.status=status;
       positionObj.orderID=orderID;
       positionObj.orderCategory=orderCategory;
+      positionObj.contributionAmount=contributionAmount;
 
       await addPosition(symbol, userId, positionObj);
       continue;
@@ -104,7 +106,8 @@ async function start() {
         positionType,
         status,
         orderID,
-        orderCategory
+        orderCategory,
+        contributionAmount,
       });
       
       console.log(`🔔 Added pending limit order for ${symbol} (${userId})`);
@@ -167,6 +170,7 @@ app.post('/add-or-update', async (req, res) => {
     quantity,
     orderID,
     orderCategory,
+    contributionAmount,
     ...rest
   } = req.body;
 
@@ -197,7 +201,8 @@ app.post('/add-or-update', async (req, res) => {
           orderType,
           positionType,
           orderID,
-          orderCategory
+          orderCategory,
+          contributionAmount,
         };
         await addPosition(symbol, userId, newPos);
         console.log(`✅ [Add] Tracked position added: ${symbol} - ${userId}`);
@@ -209,7 +214,8 @@ app.post('/add-or-update', async (req, res) => {
           orderType,
           positionType,
           quantity,
-          orderCategory
+          orderCategory,
+          contributionAmount,
         };
         await addPosition(symbol, userId, newLimit);
         console.log(`✅ [Add] Pending LIMIT order added: ${symbol} - ${userId}`);
