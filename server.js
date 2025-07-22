@@ -27,6 +27,9 @@ async function start() {
   await connectToWebSocket();
 
   const allPositions = await fetchAllOpenPositions();
+  console.log("📦 All fetched positions from DB:", JSON.stringify(allPositions, null, 2));
+
+
   console.log(`📦 Loaded ${allPositions.length} open positions from DB`);
 
   for (const pos of allPositions) {
@@ -238,6 +241,8 @@ app.post('/add-or-update', async (req, res) => {
     res.status(500).send({ ok: false, message: 'Server error' });
   }
 });
+
+
 
 // ✅ Force Delete Position from Tracking
 app.post('/force-delete', async (req, res) => {
