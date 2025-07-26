@@ -214,6 +214,7 @@ app.post('/add-or-update', async (req, res) => {
           posId,
           status,
           orderID,
+          entryPrice,
           orderType,
           positionType,
           quantity,
