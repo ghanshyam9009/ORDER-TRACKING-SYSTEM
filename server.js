@@ -284,45 +284,111 @@ app.post('/force-delete', async (req, res) => {
   }
 });
 
-app.post('/update', async (req, res) => {
-  const { symbol, userId, posId, updates } = req.body;
 
-  if (!symbol || !userId || !posId || !updates) {
+
+
+// app.post('/update', async (req, res) => {
+//   const { symbol, userId, posId, updates } = req.body;
+
+//   if (!symbol || !userId || !posId || !updates) {
+//     return res.status(400).send({
+//       ok: false,
+//       message: 'Missing required fields: symbol, userId, posId, updates',
+//     });
+//   }
+
+//   const slEmpty = updates.sl === null || updates.sl === 'null' || updates.sl === undefined;
+//   const tpEmpty = updates.tp === null || updates.tp === 'null' || updates.tp === undefined;
+
+//   try {
+//     // ❗ Check if both SL and TP are null-like → force delete
+//     if (slEmpty && tpEmpty) {
+//       console.warn(`⚠️ SL & TP both null → triggering force delete for ${symbol} - ${userId} - ${posId}`);
+
+//       // Optional: Use your actual force-delete logic here
+//       // await hitAPI('/force-delete', { symbol, userId, posId });
+//       await forceDeletePosition(symbol, userId, posId);
+
+//       return res.send({
+//         ok: true,
+//         message: 'Force delete triggered due to null SL & TP',
+//       });
+//     }
+
+//     // ✅ Proceed with normal update
+//     await updatePosition(symbol, userId, posId, updates);
+//     console.log(`🔄 [Update] Position updated via /update: ${symbol} - ${userId} - ${posId}`);
+//     res.send({ ok: true });
+
+//   } catch (err) {
+//     console.error('❌ Error in /update:', err);
+//     res.status(500).send({ ok: false, message: 'Server error' });
+//   }
+// });
+
+
+app.post('/update', async (req, res) => {
+  const { symbol, userId, posId, updates, type } = req.body;
+
+  if (!symbol || !userId || !posId || !updates || !type) {
     return res.status(400).send({
       ok: false,
-      message: 'Missing required fields: symbol, userId, posId, updates',
+      message: 'Missing required fields: symbol, userId, posId, updates, type',
     });
   }
 
-  const slEmpty = updates.sl === null || updates.sl === 'null' || updates.sl === undefined;
-  const tpEmpty = updates.tp === null || updates.tp === 'null' || updates.tp === undefined;
-
   try {
-    // ❗ Check if both SL and TP are null-like → force delete
-    if (slEmpty && tpEmpty) {
-      console.warn(`⚠️ SL & TP both null → triggering force delete for ${symbol} - ${userId} - ${posId}`);
+    if (type === 'sltp') {
+      const slEmpty = updates.sl === null || updates.sl === 'null' || updates.sl === undefined;
+      const tpEmpty = updates.tp === null || updates.tp === 'null' || updates.tp === undefined;
 
-      // Optional: Use your actual force-delete logic here
-      // await hitAPI('/force-delete', { symbol, userId, posId });
-      await forceDeletePosition(symbol, userId, posId);
+      // Force delete if both SL and TP are empty
+      if (slEmpty && tpEmpty) {
+        console.warn(`⚠️ SL & TP both null → triggering force delete for ${symbol} - ${userId} - ${posId}`);
+        await forceDeletePosition(symbol, userId, posId);
+        return res.send({
+          ok: true,
+          message: 'Force delete triggered due to null SL & TP',
+        });
+      }
 
-      return res.send({
-        ok: true,
-        message: 'Force delete triggered due to null SL & TP',
-      });
+      // Normal SLTP update
+      await updatePosition(symbol, userId, posId, updates);
+      console.log(`🔄 [SLTP Update] Position updated: ${symbol} - ${userId} - ${posId}`);
+      return res.send({ ok: true });
     }
 
-    // ✅ Proceed with normal update
-    await updatePosition(symbol, userId, posId, updates);
-    console.log(`🔄 [Update] Position updated via /update: ${symbol} - ${userId} - ${posId}`);
-    res.send({ ok: true });
+    if (type === 'limit') {
+      const trigPriceEmpty =
+        updates.triggeredPrice === null ||
+        updates.triggeredPrice === 'null' ||
+        updates.triggeredPrice === undefined;
+
+      if (trigPriceEmpty) {
+        console.warn(`⚠️ TriggeredPrice null → triggering force delete for ${symbol} - ${userId} - ${posId}`);
+        await forceDeletePosition(symbol, userId, posId);
+        return res.send({
+          ok: true,
+          message: 'Force delete triggered due to null triggeredPrice',
+        });
+      }
+
+      // Normal limit update
+      await updatePosition(symbol, userId, posId, updates);
+      console.log(`🔄 [Limit Update] Position updated: ${symbol} - ${userId} - ${posId}`);
+      return res.send({ ok: true });
+    }
+
+    return res.status(400).send({
+      ok: false,
+      message: 'Invalid type: must be "sltp" or "limit"',
+    });
 
   } catch (err) {
     console.error('❌ Error in /update:', err);
     res.status(500).send({ ok: false, message: 'Server error' });
   }
 });
-
 
 
 
