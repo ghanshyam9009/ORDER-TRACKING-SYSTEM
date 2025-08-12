@@ -355,7 +355,9 @@ app.post('/update', async (req, res) => {
       // Normal SLTP update
       await updatePosition(symbol, userId, posId, updates);
       console.log(`🔄 [SLTP Update] Position updated: ${symbol} - ${userId} - ${posId}`);
-      return res.send({ ok: true });
+      return res.send({ ok: true,
+        message: 'Position updated successfully',
+      });
     }
 
     if (type === 'limit') {
@@ -376,7 +378,9 @@ app.post('/update', async (req, res) => {
       // Normal limit update
       await updatePosition(symbol, userId, posId, updates);
       console.log(`🔄 [Limit Update] Position updated: ${symbol} - ${userId} - ${posId}`);
-      return res.send({ ok: true });
+      return res.send({ ok: true,
+         message: 'Position updated successfully',
+      });
     }
 
     return res.status(400).send({
