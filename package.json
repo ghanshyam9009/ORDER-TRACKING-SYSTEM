@@ -11,10 +11,12 @@
     },
     "dependencies": {
         "@aws-sdk/client-dynamodb": "^3.547.0",
+        "@aws-sdk/client-sns": "^3.879.0",
         "@aws-sdk/client-sqs": "^3.828.0",
         "@aws-sdk/lib-dynamodb": "^3.850.0",
         "axios": "^1.10.0",
         "cors": "^2.8.5",
+        "crypto": "^1.0.1",
         "dotenv": "^16.4.5",
         "express": "^4.19.2",
         "node-cron": "^4.1.1",
