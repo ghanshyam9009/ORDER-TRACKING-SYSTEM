@@ -330,6 +330,8 @@ app.post('/force-delete', async (req, res) => {
 app.post('/update', async (req, res) => {
   const { symbol, userId, posId, updates, type } = req.body;
 
+  console.log(req.body)
+
   if (!symbol || !userId || !posId || !updates || !type) {
     return res.status(400).send({
       ok: false,
@@ -494,6 +496,7 @@ cron.schedule('25 13 * * *', async () => {
     await axios.post('https://q8i5zqsopa.execute-api.ap-southeast-1.amazonaws.com/default/incrypto-dev-auto-squareoff-AutoSquareOffFunction-xbFlwBZcRFih');
     console.log('✅ Step 2: Square-off lambda hit');
 
+    await axios.post('https://gjc2l2eeha.execute-api.ap-southeast-1.amazonaws.com/dev/limit-close-auto');
     console.log('✅ Step 3: Limit Order lambda hit');
   } catch (err) {
     console.error('❌ Error in shutdown sequence:', err);
@@ -543,3 +546,27 @@ cron.schedule('35 13 * * *', async () => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 API server running on port ${PORT}`));
+
+
+
+
+
+
+
+
+
+// arn:aws:sns:ap-southeast-1:614745601820:TradingNotifications
+
+// https://sqs.ap-southeast-1.amazonaws.com/614745601820/TradingNotificationsQueue
+
+
+
+
+
+
+
+
+
+
+
+// https://azj171dfjh.execute-api.ap-southeast-1.amazonaws.com/dev/update_sltp_values
