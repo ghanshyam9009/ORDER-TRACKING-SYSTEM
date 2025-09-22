@@ -363,12 +363,12 @@ app.post('/update', async (req, res) => {
     }
 
     if (type === 'limit') {
-      const trigPriceEmpty =
-        updates.triggeredPrice === null ||
-        updates.triggeredPrice === 'null' ||
-        updates.triggeredPrice === undefined;
+      const entryPriceEmpty =
+        updates.entryPrice === null ||
+        updates.entryPrice === 'null' ||
+        updates.entryPrice === undefined;
 
-      if (trigPriceEmpty) {
+      if (entryPriceEmpty) {
         console.warn(`⚠️ TriggeredPrice null → triggering force delete for ${symbol} - ${userId} - ${posId}`);
         await forceDeletePosition(symbol, userId, posId);
         return res.send({
